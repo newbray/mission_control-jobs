@@ -1,5 +1,6 @@
 class MissionControl::Jobs::WorkersController < MissionControl::Jobs::ApplicationController
   before_action :ensure_exposed_workers
+  before_action :set_worker, only: [ :show, :prune ]
 
   def index
     @workers_page = MissionControl::Jobs::Page.new(workers_relation, page: params[:page].to_i)
@@ -7,7 +8,16 @@ class MissionControl::Jobs::WorkersController < MissionControl::Jobs::Applicatio
   end
 
   def show
-    @worker = MissionControl::Jobs::Current.server.find_worker(params[:id])
+  end
+
+  def prune
+    if (process = SolidQueue::Process.find_by(id: @worker.id))
+      count = process.claimed_executions.count
+      process.prune
+      redirect_to application_workers_url(@application), notice: "Killed worker #{@worker.name} (#{count} jobs moved to failed)"
+    else
+      redirect_to application_workers_url(@application), alert: "Worker process not found"
+    end
   end
 
   private
@@ -15,6 +25,10 @@ class MissionControl::Jobs::WorkersController < MissionControl::Jobs::Applicatio
       unless workers_exposed?
         redirect_to root_url, alert: "This server doesn't expose workers"
       end
+    end
+
+    def set_worker
+      @worker = MissionControl::Jobs::Current.server.find_worker(params[:id])
     end
 
     def workers_relation

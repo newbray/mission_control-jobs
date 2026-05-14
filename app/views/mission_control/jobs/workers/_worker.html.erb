@@ -18,4 +18,10 @@
   </td>
 
   <td><div class="has-text-grey"><%= time_distance_in_words_with_title(worker.last_heartbeat_at) %> ago</div></td>
+  <td>
+    <div class="buttons is-right">
+      <%= button_to "Kill", prune_application_worker_path(@application, worker.id), method: :post, class: "button is-danger is-light is-small mr-0",
+        form: { data: { turbo_confirm: "This will kill the worker process and move its in-progress jobs to failed. Are you sure?" } } %>
+    </div>
+  </td>
 </tr>

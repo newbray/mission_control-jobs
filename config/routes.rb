@@ -22,7 +22,11 @@ MissionControl::Jobs::Engine.routes.draw do
 
     resources :jobs, only: :index, path: ":status/jobs"
 
-    resources :workers, only: [ :index, :show ]
+    resources :workers, only: [ :index, :show ] do
+      member do
+        post :prune
+      end
+    end
     resources :recurring_tasks, only: [ :index, :show, :update ]
   end
 
