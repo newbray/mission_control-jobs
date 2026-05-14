@@ -1,5 +1,5 @@
 class MissionControl::Jobs::QueuesController < MissionControl::Jobs::ApplicationController
-  before_action :set_queue, only: [:show, :discard]
+  before_action :set_queue, only: [ :show, :discard ]
 
   def index
     @queues = ActiveJob.queues.sort_by(&:name)
