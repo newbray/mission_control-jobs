@@ -5,7 +5,7 @@
     <%= button_to "Resume", application_queue_pause_path(@application, queue.name), method: :delete, class: "button is-warning is-light mr-0" %>
   <% end %>
   <% if queue.size > 0 %>
-    <%= button_to "Discard All", application_queue_discard_path(@application, queue.name), method: :post, class: "button is-danger is-light mr-0",
+    <%= button_to "Discard All", discard_application_queue_path(@application, queue.name), method: :post, class: "button is-danger is-light mr-0",
       form: { data: { turbo_confirm: "This will discard all #{queue.size} pending jobs in this queue and can't be undone. Are you sure?" } } %>
   <% end %>
 </div>
